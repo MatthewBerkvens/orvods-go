@@ -12,6 +12,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/vyneer/orvods-go/parser"
+    "github.com/defrankland/hasherator"
 )
 
 var twitchToken string
@@ -323,6 +324,10 @@ func main() {
 	mux.HandleFunc("/vodinfo", getVODInfo)
 	mux.HandleFunc("/userinfo", getUserInfo)
 	mux.HandleFunc("/emotes", getEmotes)
+
+
+    assets := AssetsDir{}
+    err := assets.Run("./public/", "./test/", []string{"doNotHashThisDirectory", "ThisOneEither"})
 
 	getChatHandler := http.HandlerFunc(getChat)
 	mux.Handle("/chat", maxClients(getChatHandler, maxclients))
