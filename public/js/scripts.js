@@ -1,6 +1,6 @@
 var globals = {};
 
-$(document).ready(function() {
+$(document).ready(function () {
     var id = getUrlParameter("id");
     var v = getUrlParameter("v");
     var hash = getUrlParameter("hash");
@@ -19,9 +19,9 @@ $(document).ready(function() {
     const youtubeButton = document.getElementById("youtube-button");
     globals.sizes = localStorage.getItem('split-sizes');
 
-    if (!chatSide) { 
+    if (!chatSide) {
         chatSide = 'right'
-        localStorage.setItem('chatSide', chatSide); 
+        localStorage.setItem('chatSide', chatSide);
     }
 
     if (chatSide === 'right') {
@@ -65,12 +65,12 @@ $(document).ready(function() {
         gutterSize: 8,
         minSize: 200,
         cursor: 'col-resize',
-        onDragEnd: function(sizes) {
+        onDragEnd: function (sizes) {
             localStorage.setItem('split-sizes', JSON.stringify(sizes));
         }
     });
 
-    $("#lwod-button").click(function() {
+    $("#lwod-button").click(function () {
         if (lwodActive === 0) {
             $("#lwod").show();
             $("#player").hide();
@@ -89,7 +89,7 @@ $(document).ready(function() {
         }
     });
 
-    $("#close-lwod-button").click(function() {
+    $("#close-lwod-button").click(function () {
         $("#lwod").hide();
         if (playerActive === 1) {
             $("#player").show();
@@ -100,47 +100,47 @@ $(document).ready(function() {
         }
     });
 
-    $("#twitch-button").click(function() {
+    $("#twitch-button").click(function () {
         if (!twitchButton.classList.contains("active")) {
             twitchButton.classList.add("active");
             youtubeButton.classList.remove("active");
             page = 1;
             $("#page-number").text(page);
             $("#vod-list").empty();
-            nineEntries = allVODs.slice((page-1)*9,page*9);
+            nineEntries = allVODs.slice((page - 1) * 9, page * 9);
             createVodEntries(nineEntries, "twitch");
         }
     })
 
-    $("#youtube-button").click(function() {
+    $("#youtube-button").click(function () {
         if (!youtubeButton.classList.contains("active")) {
             youtubeButton.classList.add("active");
             twitchButton.classList.remove("active");
             page = 1;
             $("#page-number").text(page);
             $("#vod-list").empty();
-            nineEntries = allVids.slice((page-1)*9,page*9);
+            nineEntries = allVids.slice((page - 1) * 9, page * 9);
             createVodEntries(nineEntries, "youtube");
         }
     })
 
-    $("#next-page-button").click(function() {
+    $("#next-page-button").click(function () {
         vodinfo = twitchButton.classList.contains("active") ? allVODs : allVids;
         type = twitchButton.classList.contains("active") ? "twitch" : "youtube";
-        if (page != Math.ceil(vodinfo.length/9)) {
+        if (page != Math.ceil(vodinfo.length / 9)) {
             page += 1;
             $("#page-number").text(page);
             $("#vod-list").empty();
-            nineEntries = vodinfo.slice((page-1)*9,page*9);
+            nineEntries = vodinfo.slice((page - 1) * 9, page * 9);
             createVodEntries(nineEntries, type);
         }
 
-        if (page === Math.ceil(vodinfo.length/9)) {
+        if (page === Math.ceil(vodinfo.length / 9)) {
             $("#next-page-button").addClass("disabled");
         } else {
             $("#next-page-button").removeClass("disabled");
         }
-        
+
         if (page === 1) {
             $("#previous-page-button").addClass("disabled");
         } else {
@@ -148,18 +148,18 @@ $(document).ready(function() {
         }
     });
 
-    $("#previous-page-button").click(function() {
+    $("#previous-page-button").click(function () {
         vodinfo = twitchButton.classList.contains("active") ? allVODs : allVids;
         type = twitchButton.classList.contains("active") ? "twitch" : "youtube";
-        if (page > 1) { 
+        if (page > 1) {
             page -= 1;
             $("#page-number").text(page);
             $("#vod-list").empty();
-            nineEntries = vodinfo.slice((page-1)*9,page*9);
+            nineEntries = vodinfo.slice((page - 1) * 9, page * 9);
             createVodEntries(nineEntries, type);
         }
 
-        if (page === Math.ceil(vodinfo.length/9)) {
+        if (page === Math.ceil(vodinfo.length / 9)) {
             $("#next-page-button").addClass("disabled");
         } else {
             $("#next-page-button").removeClass("disabled");
@@ -172,17 +172,17 @@ $(document).ready(function() {
         }
     });
 
-    $("#dec-delay-button").click(function() {
+    $("#dec-delay-button").click(function () {
         delay = Number($("#delay").val()) - 1;
         $("#delay").val(delay);
     });
 
-    $("#inc-delay-button").click(function() {
+    $("#inc-delay-button").click(function () {
         delay = Number($("#delay").val()) + 1;
         $("#delay").val(delay);
     });
 
-    $("#switch-sides-button").click(function() {
+    $("#switch-sides-button").click(function () {
         if (document.getElementById("player").style["flex-direction"] === "row") {
             localStorage.setItem('chatSide', 'left');
             document.getElementById("player").style["flex-direction"] = "row-reverse";
@@ -192,7 +192,7 @@ $(document).ready(function() {
                 gutterSize: 8,
                 minSize: 200,
                 cursor: 'col-resize',
-                onDragEnd: function(sizes) {
+                onDragEnd: function (sizes) {
                     globals.sizes = sizes;
                     localStorage.setItem('split-sizes', JSON.stringify(sizes));
                 }
@@ -208,7 +208,7 @@ $(document).ready(function() {
                 gutterSize: 8,
                 minSize: 200,
                 cursor: 'col-resize',
-                onDragEnd: function(sizes) {
+                onDragEnd: function (sizes) {
                     globals.sizes = sizes;
                     localStorage.setItem('split-sizes', JSON.stringify(sizes));
                 }
@@ -224,24 +224,24 @@ $(document).ready(function() {
     // Check if Destiny is online every 5 minutes
     setInterval(loadDestinyStatus(), 300000);
 
-    $("#header-title").click(function() {
+    $("#header-title").click(function () {
         window.location = "/";
     });
 
-    $("body").on("click", ".vod-entry", function() {
-        window.location.href += "?id=" + $(this).attr("id"); 
+    $("body").on("click", ".vod-entry", function () {
+        window.location.href += "?id=" + $(this).attr("id");
     });
 
-    $("body").on("click", ".vid-entry", function() {
-        window.location.href += "?v=" + $(this).attr("id") + "&start=" + $(this).attr("starttime") + "&end=" + $(this).attr("endtime"); 
+    $("body").on("click", ".vid-entry", function () {
+        window.location.href += "?v=" + $(this).attr("id") + "&start=" + $(this).attr("starttime") + "&end=" + $(this).attr("endtime");
     });
 
-    $("body").on("click", ".copy-link", function(ev) {
+    $("body").on("click", ".copy-link", function (ev) {
         navigator.clipboard.writeText($(this).attr("copy"));
         ev.stopPropagation();
     });
 
-    $("body").on("click", ".copy-orig", function(ev) {
+    $("body").on("click", ".copy-orig", function (ev) {
         navigator.clipboard.writeText($(this).attr("copy"));
         ev.stopPropagation();
     });
@@ -280,26 +280,26 @@ var destinyUserID = 18074328;
 
 var pageCursor = 0;
 
-var loadDestinyStatus = function() {
+var loadDestinyStatus = function () {
     var destinyStatusUrl = "/userinfo?user_login=destiny";
 
-    $.get(destinyStatusUrl, function(userdata) {
+    $.get(destinyStatusUrl, function (userdata) {
         data = userdata
-        if (data.data === null || data.data.length === 0) {
+        if (data.data === undefined || data.data.length === 0) {
             $("#destiny-status").text("Destiny is offline.");
             $("#destiny-status").css("color", "#a70000");
         } else {
             $("#destiny-status").text("Destiny is LIVE!");
-            $("#destiny-status").css("color", "#01f335");            
+            $("#destiny-status").css("color", "#01f335");
         }
     })
 }
 
-var loadPlayer = function(id, time, type, cdn, start, end, provider) {
+var loadPlayer = function (id, time, type, cdn, start, end, provider) {
     $("#player").css("display", "flex");
 
     if (type === "twitch") {
-        var player = new Twitch.Player("video-player", { video: id , time: time });
+        var player = new Twitch.Player("video-player", { video: id, time: time });
 
         $("#copy-button").show();
         $("#copy-button").click(function () {
@@ -310,11 +310,11 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider) {
 
         var chat = new Chat(id, player, type, start, end, provider);
         var lwod = new LWOD(id, type, player);
-        player.addEventListener(Twitch.Player.PLAYING, function() {
+        player.addEventListener(Twitch.Player.PLAYING, function () {
             chat.startChatStream();
         });
-    
-        player.addEventListener(Twitch.Player.PAUSE, function() {
+
+        player.addEventListener(Twitch.Player.PAUSE, function () {
             chat.pauseChatStream();
         });
     } else if (type === "youtube") {
@@ -325,8 +325,8 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider) {
         replacedDiv = document.createElement('div');
         replacedDiv.id = "yt-player";
         document.querySelector("#video-player").appendChild(replacedDiv);
-        window.onYouTubeIframeAPIReady = function() {
-            player = new YT.Player("yt-player", { videoId: id , playerVars: {"start": time, "autoplay": 1, "playsinline": 1}});
+        window.onYouTubeIframeAPIReady = function () {
+            player = new YT.Player("yt-player", { videoId: id, playerVars: { "start": time, "autoplay": 1, "playsinline": 1 } });
 
             $("#copy-button").show();
             $("#copy-button").click(function () {
@@ -337,7 +337,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider) {
 
             chat = new Chat(id, player, type, start, end, provider);
             lwod = new LWOD(id, type, player);
-            player.addEventListener("onStateChange", function(event) {
+            player.addEventListener("onStateChange", function (event) {
                 if (event.data == YT.PlayerState.PLAYING) {
                     chat.startChatStream();
                 } else {
@@ -379,8 +379,8 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider) {
         replacedVideo.addEventListener("play", function () {
             chat.startChatStream();
         })
-    
-        replacedVideo.addEventListener("pause", function() {
+
+        replacedVideo.addEventListener("pause", function () {
             chat.pauseChatStream();
         });
 
@@ -395,24 +395,24 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider) {
     $("body").css("overflow", "hidden");
 }
 
-var createVodEntries = function(vodData, type) {
+var createVodEntries = function (vodData, type) {
     if (type === "twitch") {
-        vodData.forEach(function(vod) {
+        vodData.forEach(function (vod) {
             createVodEntry({
-                id: vod.id, 
-                title: vod.title, 
-                image: vod.thumbnail_url.replace(/%([\s\S]*)(?=\.)/, "320x180"), 
-                views: vod.view_count, 
-                date: formatDate(vod.created_at), 
+                id: vod.id,
+                title: vod.title,
+                image: vod.thumbnail_url.replace(/%([\s\S]*)(?=\.)/, "320x180"),
+                views: vod.view_count,
+                date: formatDate(vod.created_at),
                 length: vod.duration
             });
         })
     } else {
-        vodData.forEach(function(vod) {
+        vodData.forEach(function (vod) {
             createVidEntry({
-                id: vod[0], 
-                title: vod[1], 
-                image: vod[4], 
+                id: vod[0],
+                title: vod[1],
+                image: vod[4],
                 date: formatDate(vod[2]),
                 starttime: vod[2],
                 endtime: vod[3]
@@ -422,38 +422,38 @@ var createVodEntries = function(vodData, type) {
 
 };
 
-var createVodEntry = function(vod) {
+var createVodEntry = function (vod) {
     $("#vod-tmpl").tmpl(vod).appendTo("#vod-list");
 };
 
-var createVidEntry = function(vod) {
+var createVidEntry = function (vod) {
     $("#vid-tmpl").tmpl(vod).appendTo("#vod-list");
 };
 
-var createLWODTimestamps = function(data, type) {
+var createLWODTimestamps = function (data, type) {
     if (type === "twitch") {
-        data.forEach(function(timestamp) {
+        data.forEach(function (timestamp) {
             createLWODEntry({
-                starttime: timestamp[0], 
-                endtime: timestamp[1], 
-                game: timestamp[2], 
-                subject: timestamp[3], 
+                starttime: timestamp[0],
+                endtime: timestamp[1],
+                game: timestamp[2],
+                subject: timestamp[3],
                 topic: timestamp[4]
             }, type);
         })
     } else {
-        data.forEach(function(timestamp) {
+        data.forEach(function (timestamp) {
             $("th.end").remove();
             var fullSec = timestamp[0];
-            var hoursFloat = fullSec/(60*60);
+            var hoursFloat = fullSec / (60 * 60);
             var hoursInt = Math.floor(hoursFloat);
-            var minutesFloat = (hoursFloat - hoursInt)*60;
+            var minutesFloat = (hoursFloat - hoursInt) * 60;
             var minutesInt = Math.floor(minutesFloat);
-            var secInt = fullSec - (minutesInt*60 + hoursInt*60*60);
+            var secInt = fullSec - (minutesInt * 60 + hoursInt * 60 * 60);
             createLWODEntry({
-                starttime: `${hoursInt.toString().padStart(2, "0")}:${minutesInt.toString().padStart(2, "0")}:${secInt.toString().padStart(2, "0")}`, 
-                game: timestamp[1], 
-                subject: timestamp[2], 
+                starttime: `${hoursInt.toString().padStart(2, "0")}:${minutesInt.toString().padStart(2, "0")}:${secInt.toString().padStart(2, "0")}`,
+                game: timestamp[1],
+                subject: timestamp[2],
                 topic: timestamp[3]
             }, type);
         })
@@ -461,7 +461,7 @@ var createLWODTimestamps = function(data, type) {
 
 };
 
-var createLWODEntry = function(timestamp, type) {
+var createLWODEntry = function (timestamp, type) {
     if (type === "twitch") {
         $("#timestamp-tmpl").tmpl(timestamp).appendTo(".lwod-insert");
     } else {
