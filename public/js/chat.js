@@ -1,4 +1,4 @@
-var Chat = function(id, player, type, start, end, provider) {
+var Chat = function (id, player, type, start, end, provider) {
 	if (id === "nothing") {
 		this.videoId = "";
 	} else {
@@ -35,47 +35,47 @@ var Chat = function(id, player, type, start, end, provider) {
 
 	var self = this;
 	if (self.timestampStart && self.timestampEnd && (self.playerType === "youtube" || self.playerType === "m3u8")) {
-			self.recordedTime = moment(self.timestampStart).utc();
-			self.endTime = moment(self.timestampEnd).utc();
-			
-			self.chatStream.append(self.loadingMsg);
-	
-			self.difference = self.endTime.clone().startOf('day').diff(self.recordedTime.clone().startOf('day'), 'days');
-	
-			var overrustleLogsDates = [];
-	
-			for (let i = 0; i <= self.difference; i++) {
-				if (self.recordedTime.format("MM") === self.recordedTime.clone().add(i, 'days').format("MM")) {
-					var overrustleLogsStr = "https://dgg.overrustlelogs.net/Destinygg%20chatlog/" + 
-						self.recordedTime.format("MMMM") + "%20" + 
-						self.recordedTime.format("YYYY") + "/" + 
-						self.recordedTime.format("YYYY") + "-" +
-						self.recordedTime.format("MM") + "-" + self.recordedTime.clone().add(i, 'days').format("DD") + ".txt";
-				} else {
-					var overrustleLogsStr = "https://dgg.overrustlelogs.net/Destinygg%20chatlog/" + 
-						self.recordedTime.clone().add(i, 'days').format("MMMM") + "%20" + 
-						self.recordedTime.clone().add(i, 'days').format("YYYY") + "/" + 
-						self.recordedTime.clone().add(i, 'days').format("YYYY") + "-" +
-						self.recordedTime.clone().add(i, 'days').format("MM") + "-" + self.recordedTime.clone().add(i, 'days').format("DD") + ".txt";
-				}
-				overrustleLogsDates.push(overrustleLogsStr);
+		self.recordedTime = moment(self.timestampStart).utc();
+		self.endTime = moment(self.timestampEnd).utc();
+
+		self.chatStream.append(self.loadingMsg);
+
+		self.difference = self.endTime.clone().startOf('day').diff(self.recordedTime.clone().startOf('day'), 'days');
+
+		var overrustleLogsDates = [];
+
+		for (let i = 0; i <= self.difference; i++) {
+			if (self.recordedTime.format("MM") === self.recordedTime.clone().add(i, 'days').format("MM")) {
+				var overrustleLogsStr = "https://dgg.overrustlelogs.net/Destinygg%20chatlog/" +
+					self.recordedTime.format("MMMM") + "%20" +
+					self.recordedTime.format("YYYY") + "/" +
+					self.recordedTime.format("YYYY") + "-" +
+					self.recordedTime.format("MM") + "-" + self.recordedTime.clone().add(i, 'days').format("DD") + ".txt";
+			} else {
+				var overrustleLogsStr = "https://dgg.overrustlelogs.net/Destinygg%20chatlog/" +
+					self.recordedTime.clone().add(i, 'days').format("MMMM") + "%20" +
+					self.recordedTime.clone().add(i, 'days').format("YYYY") + "/" +
+					self.recordedTime.clone().add(i, 'days').format("YYYY") + "-" +
+					self.recordedTime.clone().add(i, 'days').format("MM") + "-" + self.recordedTime.clone().add(i, 'days').format("DD") + ".txt";
 			}
-	
-			$.get(featuresUrl, {}, function (data) {
-				self.features = data;
-			});
-	
-			$.get(chatUrl[self.logProvider], {
-				urls: JSON.stringify(overrustleLogsDates),
-				from: self.recordedTime.clone().format("YYYY-MM-DD HH:mm:ss UTC"),
-				to: self.endTime.clone().format("YYYY-MM-DD HH:mm:ss UTC")
-			}, function(data) {
-				self.chat = data;
-				self.startChatStream();
-				$("#loading-message").remove();
-			});
+			overrustleLogsDates.push(overrustleLogsStr);
+		}
+
+		$.get(featuresUrl, {}, function (data) {
+			self.features = data;
+		});
+
+		$.get(chatUrl[self.logProvider], {
+			urls: JSON.stringify(overrustleLogsDates),
+			from: self.recordedTime.clone().format("YYYY-MM-DD HH:mm:ss UTC"),
+			to: self.endTime.clone().format("YYYY-MM-DD HH:mm:ss UTC")
+		}, function (data) {
+			self.chat = data;
+			self.startChatStream();
+			$("#loading-message").remove();
+		});
 	} else {
-		$.get(servicesUrl[self.playerType] + this.videoId, function(vodData) {
+		$.get(servicesUrl[self.playerType] + this.videoId, function (vodData) {
 			self.hReplace = new RegExp('([h])', 'gm');
 			self.mReplace = new RegExp('([m])', 'gm');
 			self.sReplace = new RegExp('([s])', 'gm');
@@ -98,7 +98,7 @@ var Chat = function(id, player, type, start, end, provider) {
 					self.loadingMsg = "<div id='loading-message'><div id='loading-message-1' class='msg-chat'><span class='username loading-message'>Youtube error!</span></div>"
 						+ "<div id='loading-message-2' class='msg-chat'><span class='message'>Looks like this video isn't a stream recording</span></div>"
 						+ "<div id='loading-message-3' class='msg-chat'><span class='message'>Please input start and end timestamps using the button next to url input and try again " + loadingEmote + "</span></div></div>";
-				}	
+				}
 			} else if (self.playerType === "chatonly" || self.playerType === "m3u8") {
 				if (self.timestampStart && self.timestampEnd) {
 					self.recordedTime = moment(self.timestampStart).utc();
@@ -109,39 +109,39 @@ var Chat = function(id, player, type, start, end, provider) {
 						+ "<div id='loading-message-3' class='msg-chat'><span class='message'>Please input start and end timestamps using the button next to url input and try again " + loadingEmote + "</span></div></div>";
 				}
 			}
-			
+
 			self.chatStream.append(self.loadingMsg);
-	
+
 			self.difference = self.endTime.clone().startOf('day').diff(self.recordedTime.clone().startOf('day'), 'days');
-	
+
 			var overrustleLogsDates = [];
-	
+
 			for (let i = 0; i <= self.difference; i++) {
 				if (self.recordedTime.format("MM") === self.recordedTime.clone().add(i, 'days').format("MM")) {
-					var overrustleLogsStr = "https://dgg.overrustlelogs.net/Destinygg%20chatlog/" + 
-						self.recordedTime.format("MMMM") + "%20" + 
-						self.recordedTime.format("YYYY") + "/" + 
+					var overrustleLogsStr = "https://dgg.overrustlelogs.net/Destinygg%20chatlog/" +
+						self.recordedTime.format("MMMM") + "%20" +
+						self.recordedTime.format("YYYY") + "/" +
 						self.recordedTime.format("YYYY") + "-" +
 						self.recordedTime.format("MM") + "-" + self.recordedTime.clone().add(i, 'days').format("DD") + ".txt";
 				} else {
-					var overrustleLogsStr = "https://dgg.overrustlelogs.net/Destinygg%20chatlog/" + 
-						self.recordedTime.clone().add(i, 'days').format("MMMM") + "%20" + 
-						self.recordedTime.clone().add(i, 'days').format("YYYY") + "/" + 
+					var overrustleLogsStr = "https://dgg.overrustlelogs.net/Destinygg%20chatlog/" +
+						self.recordedTime.clone().add(i, 'days').format("MMMM") + "%20" +
+						self.recordedTime.clone().add(i, 'days').format("YYYY") + "/" +
 						self.recordedTime.clone().add(i, 'days').format("YYYY") + "-" +
 						self.recordedTime.clone().add(i, 'days').format("MM") + "-" + self.recordedTime.clone().add(i, 'days').format("DD") + ".txt";
 				}
 				overrustleLogsDates.push(overrustleLogsStr);
 			}
-	
+
 			$.get(featuresUrl, {}, function (data) {
 				self.features = data;
 			});
-	
+
 			$.get(chatUrl[self.logProvider], {
 				urls: JSON.stringify(overrustleLogsDates),
 				from: self.recordedTime.clone().format("YYYY-MM-DD HH:mm:ss UTC"),
 				to: self.endTime.clone().format("YYYY-MM-DD HH:mm:ss UTC")
-			}, function(data) {
+			}, function (data) {
 				self.chat = data;
 				self.startChatStream();
 				$("#loading-message").remove();
@@ -149,7 +149,7 @@ var Chat = function(id, player, type, start, end, provider) {
 		});
 	}
 
-	$.get("/emotes", function(data) {
+	$.get("/emotes", function (data) {
 		self.emotes = data;
 		// stolen from ceneza Blesstiny
 		self.emoteList = {};
@@ -158,30 +158,30 @@ var Chat = function(id, player, type, start, end, provider) {
 		self.emoteRegexNormal = new RegExp(`(^|\\s)(${emoticons})(?=$|\\s)`, 'gm');
 	});
 
-	this.startChatStream = function() {
+	this.startChatStream = function () {
 		this.status = "running";
 	};
 
-	this.pauseChatStream = function() {
+	this.pauseChatStream = function () {
 		this.status = "paused";
 	};
 
-	this._htmlEncode = function(s) {
+	this._htmlEncode = function (s) {
 		return $('<div>').text(s).html();
 	};
 
-	this._htmlDecode = function(s) {
+	this._htmlDecode = function (s) {
 		return $('<div>').html(s).text();
 	};
 
-	this._formatMessage = function(message) {
+	this._formatMessage = function (message) {
 		let nsfwClass = "";
 		if (/\b(?:NSFW|SPOILER)\b/i.test(message)) { nsfwClass = "nsfw-link"; }
 		if (/\b(?:NSFL)\b/i.test(message)) { nsfwClass = "nsfl-link"; }
-		var messageReplaced = this._htmlDecode(message).linkify({className: `externallink ${nsfwClass}`});
+		var messageReplaced = this._htmlDecode(message).linkify({ className: `externallink ${nsfwClass}` });
 
 		function replacer(p1) {
-			return self._generateDestinyEmoteImage(p1.replace(/ /g,''));
+			return self._generateDestinyEmoteImage(p1.replace(/ /g, ''));
 		}
 
 		messageReplaced = messageReplaced.replace(self.emoteRegexNormal, replacer);
@@ -189,13 +189,13 @@ var Chat = function(id, player, type, start, end, provider) {
 		return this._greenTextify(messageReplaced);
 	};
 
-	this._renderComboMessage = function(emote, comboCount) {
-		return self._generateDestinyEmoteImage(emote) + 
-			"<span class='x'> " + comboCount + "x </span>" + 
+	this._renderComboMessage = function (emote, comboCount) {
+		return self._generateDestinyEmoteImage(emote) +
+			"<span class='x'> " + comboCount + "x </span>" +
 			"<span class='combo'>C-C-C-COMBO</span>";
 	}
 
-	this._renderChatMessage = function(time, username, message) {
+	this._renderChatMessage = function (time, username, message) {
 		var usernameField = "";
 		var featuresField = "";
 		var timeFormatted = "";
@@ -204,31 +204,31 @@ var Chat = function(id, player, type, start, end, provider) {
 			timeFormatted = "<span class='time'>" + moment(time).utc().format("HH:mm") + "</span><span class='time-seconds'>" + moment(time).utc().format(":ss") + " </span>";
 		}
 		if (username in self.features) {
-			let flairArray = (self.features[username].slice(1,-1).length === 0) ? [] : self.features[username].slice(1,-1).split(",");
+			let flairArray = (self.features[username].slice(1, -1).length === 0) ? [] : self.features[username].slice(1, -1).split(",");
 			let flairList = "";
 			flairList += (username in customFlairs) ? `<i class='flair ${customFlairs[username]}'></i>` : "";
-			flairArray.forEach(function(flair) {
+			flairArray.forEach(function (flair) {
 				flair = flair.replace(/\s+/g, '').slice(1, -1);
 				featuresList += flair + " ";
 				flairList += "<i class='flair " + flair + "'></i>";
 			});
-			featuresField =  "<span class='features'>" + flairList + "</span>";
+			featuresField = "<span class='features'>" + flairList + "</span>";
 		}
 		if (username) {
 			usernameField = `<span onclick='document._addFocusRule("${username}")' class='user-${username} user ${featuresList}'>${username}</span><span class='message-divider'>:</span> `;
 		}
 
-		self.chatStream.append("<div class='msg-chat' data-username='" + username + "'>" + 
-			timeFormatted + featuresField + usernameField + 
+		self.chatStream.append("<div class='msg-chat' data-username='" + username + "'>" +
+			timeFormatted + featuresField + usernameField +
 			"<span class='message' onclick='document._removeFocusRule()'>" +
-		  	message + "</span></div>");
+			message + "</span></div>");
 	}
 
-	this._generateDestinyEmoteImage = function(emote) {
+	this._generateDestinyEmoteImage = function (emote) {
 		return " <div class='emote " + emote + "' title=" + emote + "/>";
 	};
 
-	this._greenTextify = function(message) {
+	this._greenTextify = function (message) {
 		if (this._htmlDecode(message)[0] === '>') {
 			return `<span class='greentext'>${message}</span>`;
 		} else if (this._htmlDecode(message).substring(0, 3) === '/me') {
@@ -239,11 +239,11 @@ var Chat = function(id, player, type, start, end, provider) {
 	}
 
 	if (self.playerType == "twitch") {
-		self.videoPlayer.addEventListener(Twitch.Player.PLAYING, function() {
+		self.videoPlayer.addEventListener(Twitch.Player.PLAYING, function () {
 			self.actualPreviousTimeOffset = Math.floor(self.videoPlayer.getCurrentTime());
 		});
 	} else if (self.playerType == "youtube") {
-		self.videoPlayer.addEventListener('onStateChange', function(event) {
+		self.videoPlayer.addEventListener('onStateChange', function (event) {
 			if (event.data == YT.PlayerState.PLAYING) {
 				self.actualPreviousTimeOffset = Math.floor(self.videoPlayer.getCurrentTime());
 			}
@@ -251,25 +251,20 @@ var Chat = function(id, player, type, start, end, provider) {
 	} else if (self.playerType == "chatonly") {
 		self.actualPreviousTimeOffset = 0
 	} else if (self.playerType == "m3u8") {
-		self.videoPlayer.addEventListener('progress', function() {
+		self.videoPlayer.addEventListener('progress', function () {
 			self.actualPreviousTimeOffset = Math.floor(self.videoPlayer.currentTime);
 		});
 	}
 
-	/* can't make it work properly right now
-	$('#chat-stream').on('scroll', function() { 
-		console.log($(this).scrollTop())
-		console.log($(this).innerHeight())
-		console.log($(this)[0].scrollHeight)
-		if ($(this).scrollTop() + $(this).innerHeight() >=  $(this)[0].scrollHeight) { 
-			self.bottomDetector = true;
+	$("#chat-stream").scroll(function () {
+		if (self.chatStream.scrollTop() + self.chatStream.innerHeight() >= self.chatStream[0].scrollHeight - 40) {
+			self.bottomDetector = true
 		} else {
-			self.bottomDetector = false;
+			self.bottomDetector = false
 		}
 	});
-	*/
 
-	$("#pause-controls").click(function() {
+	$("#pause-controls").click(function () {
 		if (self.status === "running") {
 			$("#pause-controls").text("Start chat")
 			self.status = "paused";
@@ -277,11 +272,11 @@ var Chat = function(id, player, type, start, end, provider) {
 		} else if (self.status === "paused") {
 			$("#pause-controls").text("Stop chat")
 			self.status = "running";
-			self.chatInterval = window.setInterval(function() {self.chatFunction()}, 500);
+			self.chatInterval = window.setInterval(function () { self.chatFunction() }, 500);
 		}
 	});
 
-	self.chatFunction = function() {
+	self.chatFunction = function () {
 		if (self.status == "running" && self.chat) {
 			self.chatonlyCounter += 0.5;
 			var currentTimeOffset = (self.playerType === "chatonly") ? Math.floor(self.chatonlyCounter) : (self.playerType === "m3u8") ? Math.floor(self.videoPlayer.currentTime) : Math.floor(self.videoPlayer.getCurrentTime());
@@ -291,7 +286,7 @@ var Chat = function(id, player, type, start, end, provider) {
 			if (currentTimeOffset != self.previousTimeOffset) {
 
 				timeDifference = currentTimeOffset - self.actualPreviousTimeOffset;
-				
+
 				timestamps.push(self.recordedTime.clone().add(-(Number(self.delay.val())) + currentTimeOffset, 's').format().replace("+00:00", "Z"));
 
 				if (timeDifference > 1 && timeDifference < 30) {
@@ -312,16 +307,16 @@ var Chat = function(id, player, type, start, end, provider) {
 					msgAmount += self.chat[utcFormat[i]].length;
 				};
 
-				var randomTimeouts = Array.from({length: msgAmount}, () => Math.random());
+				var randomTimeouts = Array.from({ length: msgAmount }, () => Math.random());
 				randomTimeouts.sort();
 
-				i=0;
+				i = 0;
 
 				utcFormat.forEach((element) => {
-					self.chat[element].forEach(function(chatLine) {
+					self.chat[element].forEach(function (chatLine) {
 						// Add a random delay between chat messages, makes it more readable
 						// https://i.imgur.com/OJG6xft.gif
-						setTimeout(function(){
+						setTimeout(function () {
 							if (self.previousMessage == chatLine.message && self.emoteList[self.previousMessage]) {
 								self.comboCount++;
 								$("#chat-stream .msg-chat").last().remove();
@@ -331,11 +326,11 @@ var Chat = function(id, player, type, start, end, provider) {
 								self.comboCount = 1;
 								self._renderChatMessage(element, chatLine.username, self._formatMessage(chatLine.message));
 							}
-					
+
 							self.previousMessage = chatLine.message;
-							//if (self.bottomDetector) {
-								self.chatStream.scrollTop( function () { return this.scrollHeight } );
-							//}
+							if (self.bottomDetector) {
+								self.chatStream.scrollTop(self.chatStream[0].scrollHeight);
+							}
 						}, randomTimeouts[i] * 400);
 						i++;
 					});
@@ -356,5 +351,5 @@ var Chat = function(id, player, type, start, end, provider) {
 		}
 	}
 
-	self.chatInterval = window.setInterval(function() {self.chatFunction()}, 500);
+	self.chatInterval = window.setInterval(function () { self.chatFunction() }, 500);
 };
